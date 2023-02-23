@@ -38,7 +38,7 @@ for city in cities:
     # to track progress
     print(city)
     for factor in macro_factors:
-        if factor == 'Per Capita Personal Income' or 'Unemployment Rate' or 'Total Gross Domestic Product' or 'Resident Population':
+        if factor == 'Per Capita Personal Income' or factor == 'Unemployment Rate' or factor == 'Total Gross Domestic Product' or factor == 'Resident Population':
             # Construct the API request URL
             url = f'https://api.stlouisfed.org/fred/series/search?api_key={api_key}&search_text={factor} {city} (MSA)&file_type=json'
         elif factor == 'Combined Violent and Property Crime':
@@ -71,7 +71,7 @@ for city in cities:
                     
                     found = False
                     # Check if the title is correct
-                    if factor == 'Per Capita Personal Income' or 'Unemployment Rate' or 'Total Gross Domestic Product' or 'Resident Population':
+                    if factor == 'Per Capita Personal Income' or factor == 'Unemployment Rate' or factor == 'Total Gross Domestic Product' or factor == 'Resident Population':
                         substrings = [f'{factor}', f'{city}', f'{state}', '(MSA)']
                         if all(substring in series_title for substring in substrings):
                             found = True
