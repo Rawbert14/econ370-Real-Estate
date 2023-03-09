@@ -2,7 +2,7 @@
 
 ## Pull Data
 ### Necessary Files
-The "Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month" file contains housing price data over time for a number of cities; it is also accessible at https://www.zillow.com/research/data/.  
+The [Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month](Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month) file contains housing price data over time for a number of cities; it is also accessible at https://www.zillow.com/research/data/.  
 The zipfile "simplemaps_uscities_basicv1.76" contains a file that has county names for every city; it is also accessible here at https://simplemaps.com/data/us-cities.
 ### Code
 The "clean_data_api.py" code pulls macro data from FRED for every city contained in the Zillow data which has complete data.
