@@ -1,7 +1,7 @@
 import pickle
 
 # open the file for reading
-with open('clean_macro_city_data', 'rb') as f:
+with open('macro_and_housing_data', 'rb') as f:
     # deserialize the data and load it back into a dictionary
     loaded_data = pickle.load(f)
     
