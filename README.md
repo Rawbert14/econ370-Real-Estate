@@ -1,11 +1,26 @@
 # econ370-Real-Estate
 
 ## Pull Data
+### Necessary Files
+The "Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month" file contains housing price data over time for a number of cities; it is also accessible at https://www.zillow.com/research/data/.  
+The zipfile "simplemaps_uscities_basicv1.76" contains a file that has county names for every city; it is also accessible here at https://simplemaps.com/data/us-cities.
+### Code
+The "clean_data_api.py" code pulls macro data from FRED for every city contained in the Zillow data which has complete data.
+This data is stored in the "clean_macro_city_data" dictionary.  
+Searches for data which yield no results is stored in the "no_results.txt" file.
 
-The "Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month" (accessible here: https://www.zillow.com/research/data/) file and a file within the folder "simplemaps_uscities_basicv1.76" (accessible here: https://simplemaps.com/data/us-cities) are used in the "clean_data_api.py" code.
+## Combine Macro and Housing Data
+### Necessary Files
+The "clean_macro_city_data" dictionary contains macro data from FRED for every city contained in the Zillow data which has complete data; it is also created with the "clean_data_api.py" code.
+The "Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month" file contains housing price data over time for a number of cities; it is also accessible at https://www.zillow.com/research/data/.
+### Code
+The "combine_macro_and_housing_data.py" code adds the housing price data for every city contained in the Zillow data which has complete data to the "clean_macro_city_data" dictionary.
+This data is stored in the "macro_and_housing_data" dictionary.
 
-The "clean_macro_city_data" is a python dictionary that contains the time series pulled from FRED using the "clean_data_api.py" code.
-
-The "clean_no_results.txt" is a text file that contains a list of all of the time series searches that failed to yield results.
-
-The "open_dictionary.py" is a python file that contains code to open the "clean_macro_city_data" and "clean_no_results.txt" files in python.
+## Open Dictionaries
+### Necessary Files
+The "macro_and_housing_data" dictionary contains the housing price data and macro data from FRED for every city contained in the Zillow data which has complete data; it is also created with the "combine_macro_and_housing_data" code.
+The "no_results.txt." file contains a list of searches of FRED data which yielded no results; it is also created with the "clean_data_api.py" code.
+### Code
+The "open_dictionary.py" code opens the "macro_and_housing_data" dictionary and "clean_no_results.txt" file in python.  
+The code can be adapted to open other dictionaries, such as the "clean_macro_city_data" dictionary, by changing the file name in the "open()" function.
