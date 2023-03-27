@@ -8,8 +8,10 @@ with open('macro_and_housing_data', 'rb') as f:
 macro_housing_data_no_cpi = {}
 
 for key, value in loaded_data.items():
-    if 'Consumer Price Index for All Urban Consumers: All Items' in key:
-        macro_housing_data_no_cpi[key] = value
+    if 'Consumer Price Index for All Urban Consumers: All Items' not in key:
+        city_name, state_abbr, variable = key
+        new_key = (f"{city_name}, {state_abbr}", variable)
+        macro_housing_data_no_cpi[new_key] = value
 
 # save time series data
 with open('macro_housing_data_no_cpi', 'wb') as f:
