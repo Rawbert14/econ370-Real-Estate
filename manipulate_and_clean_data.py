@@ -57,7 +57,8 @@ data = pd.read_csv(housing_url, skiprows=[1]).dropna()
 # split city names and state abbreviations
 data[['RegionName', 'State']] = data['RegionName'].str.split(', ', expand=True)
 
-housing_and_macro_data = renamed_macro_city_data
+# Initialize combined dictionary
+housing_and_macro_data = renamed_macro_city_data.copy()
 
 # iterate over each row in the dataframe
 for index, row in data.iterrows():
@@ -111,8 +112,10 @@ with open('macro_and_housing_data', 'rb') as f:
     loaded_data = pickle.load(f)
 '''
 
+# Initialize filtered dictionary
 macro_housing_data_no_cpi = {}
 
+# Only include non-CPI series
 for key, value in housing_and_macro_data.items():
     if 'cpi' not in key:
         macro_housing_data_no_cpi[key] = value
@@ -136,6 +139,7 @@ with open('macro_housing_data_no_cpi', 'rb') as f:
 # Initialize new dictionary for interpolated data
 interpolated_series = {}
 
+# Reecognize series dates
 for key, df in macro_housing_data_no_cpi.items():
     if key[1] == 'housing':
         df['date'] = pd.to_datetime(df['date'])
