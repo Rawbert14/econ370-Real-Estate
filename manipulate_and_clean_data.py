@@ -124,7 +124,7 @@ with open('macro_housing_data_no_cpi', 'wb') as f:
     pickle.dump(macro_housing_data_no_cpi, f)
 '''
 
-#%% MERGE TIME SERIES
+#%% INTERPOLATE DATA
 
 '''
 # open the file for reading
@@ -133,15 +133,30 @@ with open('macro_housing_data_no_cpi', 'rb') as f:
     macro_housing_data_no_cpi = pickle.load(f)
 '''
 
+# Initialize new dictionary for interpolated data
+interpolated_series = {}
+
 for key, df in macro_housing_data_no_cpi.items():
     if key[1] == 'housing':
         df['date'] = pd.to_datetime(df['date'])
         df['date'] = df['date'] + pd.Timedelta(days=1)
     else:
         df['date'] = pd.to_datetime(df['date'])
+    
+    # Set date as index
+    df.set_index('date', inplace=True)
+    
+    # Prep for interpolation
+    df['value'] = pd.to_numeric(df['value'], errors='coerce')
+    
+    # Interpolate the data
+    merged_df = df.resample('MS').interpolate()
+    
+    # Add interpolated data to new dictionary
+    interpolated_series[key] = merged_df
 
 # Get the unique city names and state abbreviations
-cities = list(set([key[0] for key in macro_housing_data_no_cpi.keys()]))
+cities = list(set([key[0] for key in interpolated_series.keys()]))
 
 # Initialize an empty dictionary to store the merged DataFrames for each city
 merged_time_series = {}
@@ -149,32 +164,21 @@ merged_time_series = {}
 # Loop through the unique city names and state abbreviations
 for city_key in cities:
     # Get the housing prices DataFrame for the current city
-    df_housing = macro_housing_data_no_cpi[(city_key, 'housing')]
+    df_housing = interpolated_series[(city_key, 'housing')]
 
     # Initialize the merged DataFrame with the housing prices DataFrame
     merged_df = df_housing
 
     # Loop through all DataFrames in the dictionary, and merge them if they belong to the current city
-    for key, df in macro_housing_data_no_cpi.items():
+    for key, df in interpolated_series.items():
         if key[0] == city_key and key[1] != 'housing':
             merged_df = merged_df.merge(df, on='date', how='left', suffixes=('', f'_{key[1]}'))
 
-    # Set the merged DataFrame's index to the 'Date' column
-    merged_df.set_index('date', inplace=True)
-    
-    # Prep for interpolation
-    for col in merged_df.columns:
-        merged_df[col] = pd.to_numeric(merged_df[col], errors='coerce')
-        
-    # Interpolate the data
-    df_monthly = merged_df.resample('MS').interpolate()
-
     # Add the merged DataFrame to the merged_dfs dictionary
-    merged_time_series[city_key] = df_monthly
+    merged_time_series[city_key] = merged_df
 
 # Drop cities without all variables
 merged_time_series = {key: df for key, df in merged_time_series.items() if df.shape[1] == 7}
-
 
 # save time series data
 with open('merged_time_series', 'wb') as f:
