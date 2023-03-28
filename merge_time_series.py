@@ -8,10 +8,10 @@ with open('macro_housing_data_no_cpi', 'rb') as f:
 
 for key, df in loaded_data.items():
     if key[1] == 'housing prices':
-        df['date'] = pd.to_datetime(df['date']).dt.date
+        df['date'] = pd.to_datetime(df['date'])
         df['date'] = df['date'] + pd.Timedelta(days=1)
     else:
-        df['date'] = pd.to_datetime(df['date']).dt.date
+        df['date'] = pd.to_datetime(df['date'])
 
 # Get the unique city names and state abbreviations
 cities = list(set([key[0] for key in loaded_data.keys()]))
@@ -34,9 +34,16 @@ for city_key in cities:
 
     # Set the merged DataFrame's index to the 'Date' column
     merged_df.set_index("date", inplace=True)
+    
+    # Prep for interpolation
+    for col in merged_df.columns:
+        merged_df[col] = pd.to_numeric(merged_df[col], errors='coerce')
+        
+    # Interpolate the data
+    df_monthly = merged_df.resample('MS').interpolate()
 
     # Add the merged DataFrame to the merged_dfs dictionary
-    merged_time_series[city_key] = merged_df\
+    merged_time_series[city_key] = df_monthly
 
 # save time series data
 with open('merged_time_series', 'wb') as f:
