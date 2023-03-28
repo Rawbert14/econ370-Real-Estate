@@ -175,10 +175,9 @@ for city_key in cities:
 # Drop cities without all variables
 merged_time_series = {key: df for key, df in merged_time_series.items() if df.shape[1] == 7}
 
-'''
+
 # save time series data
 with open('merged_time_series', 'wb') as f:
     # serialize the dictionary and write it to the file
     pickle.dump(merged_time_series, f)
-'''
 
