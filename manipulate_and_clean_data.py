@@ -128,7 +128,7 @@ with open('macro_housing_data_no_cpi', 'wb') as f:
     pickle.dump(macro_housing_data_no_cpi, f)
 '''
 
-#%% Add US CPI DATA FOR EACH CITY
+#%% Add US CPI and INTEREST RATE DATA FOR EACH CITY
 
 api_key = 'b2534a6482828132c3baa9e6ae2231c0'  # replace with your FRED API key
 
@@ -147,35 +147,51 @@ data_dict = {"date": [observation["date"] for observation in data["observations"
 # convert the data dictionary to a table
 cpi = pd.DataFrame(data_dict)
 
+interest_id = 'FEDFUNDS'
+
+# construct the API request URL and make the request
+url = f"https://api.stlouisfed.org/fred/series/observations?series_id={interest_id}&api_key={api_key}&file_type=json"
+response = requests.get(url)
+
+data = response.json()
+
+# create a dictionary of the data
+data_dict = {"date": [observation["date"] for observation in data["observations"]],
+             "value": [observation["value"] for observation in data["observations"]]}
+
+# convert the data dictionary to a table
+interest = pd.DataFrame(data_dict)
+
 # Inititalize dictionary for adding cpi data
-macro_housing_data_with_cpi = macro_housing_data_no_cpi.copy()
+macro_housing_data_with_cpi_interest = macro_housing_data_no_cpi.copy()
 
 cities = list(set([(key[0]) for key in macro_housing_data_no_cpi.keys()]))
 
 for city in cities:
-    macro_housing_data_with_cpi[city, 'cpi'] = cpi.copy()
+    macro_housing_data_with_cpi_interest[city, 'cpi'] = cpi.copy()
+    macro_housing_data_with_cpi_interest[city, 'interest'] = interest.copy()
 
 '''
 # save time series data
-with open('macro_housing_data_with_cpi', 'wb') as f:
+with open('macro_housing_data_with_cpi_interest', 'wb') as f:
     # serialize the dictionary and write it to the file
-    pickle.dump(macro_housing_data_with_cpi, f)
+    pickle.dump(macro_housing_data_with_cpi_interest, f)
 '''
 
 #%% INTERPOLATE DATA
 
 '''
 # open the file for reading
-with open('macro_housing_data_with_cpi', 'rb') as f:
+with open('macro_housing_data_with_cpi_interest', 'rb') as f:
     # deserialize the data and load it back into a dictionary
-    macro_housing_data_with_cpi = pickle.load(f)
+    macro_housing_data_with_cpi_interest = pickle.load(f)
 '''
 
 # Initialize new dictionary for interpolated data
 interpolated_series = {}
 
 # Reecognize series dates
-for key, df in macro_housing_data_with_cpi.items():
+for key, df in macro_housing_data_with_cpi_interest.items():
     if key[1] == 'housing':
         df['date'] = pd.to_datetime(df['date'])
         df['date'] = df['date'] + pd.Timedelta(days=1)
@@ -217,7 +233,7 @@ for city_key in cities:
     merged_time_series[city_key] = merged_df
 
 # Drop cities without all variables
-merged_time_series = {key: df for key, df in merged_time_series.items() if df.shape[1] == 8}
+merged_time_series = {key: df for key, df in merged_time_series.items() if df.shape[1] == 9}
 
 # save time series data
 with open('merged_time_series', 'wb') as f:
