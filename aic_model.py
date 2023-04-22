@@ -32,13 +32,9 @@ ardl_model_housing = ardl_select_order(
     ic="aic", trend="c"
 )
 
-ardl_model_dict = {}
-ardl_model_dict['housing model'] = ardl_model_housing
-
-# save combined data
-with open('ardl_model_dict', 'wb') as f:
-    # serialize the dictionary and write it to the file
-    pickle.dump(ardl_model_dict, f)
+# Save the results
+with open('ardl_model_housing.pkl', 'wb') as f:
+    pickle.dump(ardl_model_housing, f)
 
 dl_lags = ardl_model_housing.dl_lags
 
