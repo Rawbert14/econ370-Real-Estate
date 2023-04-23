@@ -1,6 +1,8 @@
 import pickle
 import pandas as pd
+import numpy as np
 from statsmodels.tsa.ardl import ardl_select_order
+import matplotlib.pyplot as plt
 
 # open the file for reading
 with open('merged_time_series', 'rb') as f:
@@ -26,21 +28,24 @@ dataframes = list(cities_dict.values())
 # Concatenate the DataFrames vertically
 all_cities = pd.concat(dataframes)
 
-ardl_model_housing = ardl_select_order(
+
+# Get model selection
+ardl_selection_results = ardl_select_order(
     all_cities['value'], 3, 
     all_cities[['value_income', 'value_unemployment', 'value_gdp', 'value_population', 'value_crime', 'value_tax', 'value_cpi', 'value_interest']], 3, 
     ic="aic", trend="c"
 )
 
 # Save the results
-with open('ardl_model_housing.pkl', 'wb') as f:
-    pickle.dump(ardl_model_housing, f)
+with open('ardl_selection_results.pkl', 'wb') as f:
+    pickle.dump(ardl_selection_results, f)
 
-dl_lags = ardl_model_housing.dl_lags
-
-optimal_order = ardl_model_housing.model.ardl_order
+optimal_order = ardl_selection_results.model.ardl_order
 print(f'The optimal order is: {optimal_order}')
 
-ardl_model = ardl_model_housing.model.fit()
+ardl_model = ardl_selection_results.model.fit()
 print(ardl_model.summary())
 
+# Save the model
+with open('ardl_model.pkl', 'wb') as f:
+    pickle.dump(ardl_model, f)
