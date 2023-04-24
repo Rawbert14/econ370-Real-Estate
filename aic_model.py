@@ -1,8 +1,6 @@
 import pickle
 import pandas as pd
-import numpy as np
 from statsmodels.tsa.ardl import ardl_select_order
-import matplotlib.pyplot as plt
 
 # open the file for reading
 with open('merged_time_series', 'rb') as f:
