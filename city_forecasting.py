@@ -63,7 +63,7 @@ def plot_results(forecasting_data, predictions, city):
     ax = forecasting_data.plot(y='value', label='actual', color='blue')
 
     # Plot the second DataFrame on the same axis
-    predictions.plot(y='0', label='forecast', color='red', ax=ax)
+    predictions.plot(y='0', label='prediction', color='red', ax=ax)
 
     # Customize the plot
     plt.xlabel('Time')
