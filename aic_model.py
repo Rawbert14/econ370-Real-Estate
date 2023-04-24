@@ -27,10 +27,10 @@ dataframes = list(cities_dict.values())
 all_cities = pd.concat(dataframes)
 
 
-# Get model selection
+# Get model selection (don't include tax data)
 ardl_selection_results = ardl_select_order(
     all_cities['value'], 3, 
-    all_cities[['value_income', 'value_unemployment', 'value_gdp', 'value_population', 'value_crime', 'value_tax', 'value_cpi', 'value_interest']], 3, 
+    all_cities[['value_income', 'value_unemployment', 'value_gdp', 'value_population', 'value_crime', 'value_cpi', 'value_interest']], 3, 
     ic="aic", trend="c"
 )
 
