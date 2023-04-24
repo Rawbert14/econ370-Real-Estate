@@ -10,13 +10,13 @@ with open('merged_time_series', 'rb') as f:
 cities_dict = {}
 # Define the start and end dates
 start_date = '2004-01-01'
-end_date = '2021-12-31'
+end_date = '2020-12-31'
 
 for key, df in merged_time_series.items():
     filtered_df = df.copy()
-    filtered_df = df[(df.index >= start_date) & (df.index <= end_date)]
     filtered_df.fillna(method='ffill', inplace=True)  # Forward-fill
     filtered_df.fillna(method='bfill', inplace=True)  # Backward-fill
+    filtered_df = filtered_df[(filtered_df.index >= start_date) & (filtered_df.index <= end_date)]
     filtered_df = filtered_df.asfreq('MS')  # Set the frequency to Month Start
     cities_dict[key] = filtered_df
 
@@ -25,7 +25,6 @@ dataframes = list(cities_dict.values())
 
 # Concatenate the DataFrames vertically
 all_cities = pd.concat(dataframes)
-
 
 # Get model selection (don't include tax data)
 ardl_selection_results = ardl_select_order(
