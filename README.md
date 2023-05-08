@@ -1,6 +1,6 @@
 # econ370-Real-Estate
 
-The `clean_data_api_v3.py` file is used to pull all of the macro factor data from FRED. It does not require any data or external files to run. It outputs and saves the `clean_macro_city_data` file, which is a dictionary of all of the time series found, and the `clean_no_results` file, which is a list of the variables that were not found.
+The `clean_data_api_v3.py` file is used to pull all of the macro factor data from FRED. It does not require any data or external files to run. It outputs and saves the `clean_macro_city_data` file, which is a dictionary of all of the time series found, and the `clean_no_results.txt` file, which is a list of the variables that were not found.
 
 The `manipulate_and_clean_data.py` file requires the `clean_macro_city_data` file, in order to clean the data and manipulate it into usable dataframes. It outputs and saves the `merged_time_series` file, which is a dictionary of all of the dataframes.
 
